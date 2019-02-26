@@ -10,7 +10,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href = "styles.css">
+  
 </head>
 <body>
     <div class="container">
@@ -50,32 +50,27 @@
     <hr>
     </div>
     
-
-     <!-- Mars Hemispheres -->
-     <div class="row" id="mars-hemispheres" style="margin-top:80px;">
-
-        <div class="page-header">
-          <h2 class="text-center">Mars Hemispheres</h2>
-        </div>
-  
-  
-        {% for image in mars_data.hemi_image %}
-          <div class="col-md-6">
-              <div class="thumbnail">
-  
-              <!-- if images is False/None/non-existent, then default to error message -->
-              <img src="{{image.img_url | default('static/images/error.png', true)}}"
-                  alt="...">
-              <div class="caption">
-                  <h3>{{image.title}}</h3>
-              </div>
-              </div>
-          </div>
-        {% endfor %}
-  
-      </div>
-  
+     <div class="container">
+        <h3 style="padding-top: 50px; margin-top: 100px; text-align: center;">Mars Hemispheres</h3>
+        <div class="card-deck">
+            <hr>
+            <div class="col-md-12">
+                <div class="row">
+                    {% for image in mars_data.hemisphere_image_urls %}
+                    <div class="col-md-6">
+                        <div class="card text-white bg-info" style="margin: 30px;">
+                            <img class="card-img-top" src="{{ image.img_url }}" style="height: 500px; width: 500px"/>
+                            <div class="card-body">
+                                <p class="card-text">{{ image.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>    
     </div>
+ </div>
   </body>
   
   </html>

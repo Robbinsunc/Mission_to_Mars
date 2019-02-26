@@ -95,46 +95,45 @@ def scrape():
     mars_data['mars_facts'] = mars_facts
 
     #Mars Hemisphere images
+    #Mars Hemispheres
     executable_path = {'executable_path': 'chromedriver.exe'}
     browser =  Browser('chrome', **executable_path, headless=False)
-
-    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-    browser.visit(url)
-
-    hemi_html = browser.html
-    soup = bs(hemi_html, "html.parser")
-
-    hemi = soup.find('div', 'collapsible results')
-        
-    mars_hemi_image = hemi.find_all("div", {"class": "description"})
+    mars_hemispheres_url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    browser.visit(mars_hemispheres_url)
+    
+    html = browser.html
+    soup = bs(html, "lxml")
+    
+    hemi_image = soup.find_all('div', class_='item')
     hemisphere_image_urls = []
 
-    for image in mars_hemi_image:
-        attrib = image.find('a')
+    image_base = "https://astrogeology.usgs.gov"
 
+    for image in hemi_image:
+    
         #Retrieve title and link to specific hemisphere page
-        title = attrib.h3.text
-        link = 'https://astrogeology.usgs.gov' + attrib['href']
+        title = image.find('h3').text
+    
+        image_base2 = image.find('a', class_='itemLink product-item')['href']
 
         #Visit above link
-        browser.visit(link)
-        time.sleep(2)
+        browser.visit(image_base + image_base2)
 
-        #Retrieve link to image
-        html = browser.html
-        hemi_soup = bs(html, 'html.parser')
-        image_link = hemi_soup.find('div', 'downloads').find('li').a['href']
+        #visit link to full image
+        image_html = browser.html
+        hemi_soup = bs(image_html, 'html.parser')
+        img_url = image_base + hemi_soup.find('img', class_='wide-image')['src']
 
-        #Create empty dictionary for title & image
-        hemi_dict = {}
-        hemi_dict['title'] = title
-        hemi_dict['img_url'] = image_link
+        #Add images dictionary to list
+        hemisphere_image_urls.append({'title': title, "img_url": img_url})
+        
+    mars_data['hemisphere_image_urls'] = hemisphere_image_urls
 
-        #Add image_dict to empty list from above
-        hemisphere_image_urls.append(hemi_dict)
 
     
     return mars_data
+
+    browser.quit()
 
 
 
